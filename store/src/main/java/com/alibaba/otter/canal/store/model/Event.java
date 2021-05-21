@@ -25,7 +25,7 @@ public class Event implements Serializable {
     private ByteString        rawEntry;
 
     private long              executeTime;
-    private EntryType         entryType;
+    private EntryType         entryType; // dml一般 begin update  heart  rowdata  这四种  [其他在parse就忽略了]
     private String            journalName;
     private long              position;
     private long              serverId;

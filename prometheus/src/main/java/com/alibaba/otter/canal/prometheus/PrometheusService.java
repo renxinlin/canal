@@ -15,6 +15,25 @@ import static com.alibaba.otter.canal.server.netty.CanalServerWithNettyProfiler.
 import static com.alibaba.otter.canal.server.netty.CanalServerWithNettyProfiler.profiler;
 
 /**
+ *
+ *
+ *   - job_name: 'consul-normal'
+ *     scrape_interval: 30s       // prometheus定时拉取策略
+ *     scrape_timeout: 30s
+ *     consul_sd_configs:
+ *       - server: '10.106.169.121:18500'
+ *         token: '47eca91b-a5e7-e82d-6424-dba7637e0737'
+ *         services: [prometheus-normal-LOCAL]
+ *     relabel_configs:
+ *       - regex: __meta_consul_service_metadata_(.*)
+ *         replacement: ${1}
+ *         action: labelmap
+ *       - source_labels: [__meta_consul_tags]
+ *         regex: .*normal.* #该job只管理tag包含normal的service
+ *
+ *
+ *
+ *
  * @author Chuanyi Li
  */
 public class PrometheusService implements CanalMetricsService {

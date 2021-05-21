@@ -13,6 +13,8 @@ import com.alibaba.otter.canal.store.CanalStoreException;
 
 /**
  * 缓冲event队列，提供按事务刷新数据的机制
+ *
+ * 当add的事务完整后就会flush
  * 
  * @author jianghang 2012-12-6 上午11:05:12
  * @version 1.0.0

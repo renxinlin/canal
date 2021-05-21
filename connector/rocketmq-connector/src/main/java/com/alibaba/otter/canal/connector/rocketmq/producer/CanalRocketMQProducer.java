@@ -52,6 +52,7 @@ public class CanalRocketMQProducer extends AbstractMQProducer implements CanalMQ
 
     @Override
     public void init(Properties properties) {
+
         RocketMQProducerConfig rocketMQProperties = new RocketMQProducerConfig();
         this.mqProperties = rocketMQProperties;
         super.init(properties);
@@ -253,7 +254,7 @@ public class CanalRocketMQProducer extends AbstractMQProducer implements CanalMQ
 
     private void sendMessage(Message message, int partition) {
         try {
-            SendResult sendResult = this.defaultMQProducer.send(message, (mqs, msg, arg) -> {
+            SendResult sendResult = this.defaultMQProducer.send(message, (List<MessageQueue> mqs, Message msg, Object arg) -> {
                 if (partition >= mqs.size()) {
                     return mqs.get(partition % mqs.size());
                 } else {

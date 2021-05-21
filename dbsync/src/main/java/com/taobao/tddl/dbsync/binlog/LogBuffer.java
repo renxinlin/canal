@@ -10,7 +10,7 @@ import java.util.BitSet;
 
 /**
  * TODO: Document Me!!
- * 
+ * binlog 二进制流缓冲
  * @author <a href="mailto:changyuan.lh@taobao.com">Changyuan.lh</a>
  * @version 1.0
  */

@@ -191,6 +191,7 @@ public class MemoryEventStoreWithBuffer extends AbstractCanalStoreScavenge imple
 
         // 先写数据，再更新对应的cursor,并发度高的情况，putSequence会被get请求可见，拿出了ringbuffer中的老的Entry值
         for (long next = current + 1; next <= end; next++) {
+            // 一个事务分开多个entry 各自放到自己的index上
             entries[getIndex(next)] = data.get((int) (next - current - 1));
         }
 
@@ -287,6 +288,7 @@ public class MemoryEventStoreWithBuffer extends AbstractCanalStoreScavenge imple
         List<Event> entrys = result.getEvents();
         long memsize = 0;
         if (batchMode.isItemSize()) {
+
             end = (next + batchSize - 1) < maxAbleSequence ? (next + batchSize - 1) : maxAbleSequence;
             // 提取数据并返回
             for (; next <= end; next++) {
@@ -594,6 +596,7 @@ public class MemoryEventStoreWithBuffer extends AbstractCanalStoreScavenge imple
         if (events != null && !events.isEmpty()) {
             for (Event e : events) {
                 if (localExecTime == 0 && e.getExecuteTime() > 0) {
+                    // 代表数据库的sql执行发送 时间
                     localExecTime = e.getExecuteTime();
                 }
                 deltaRows += e.getRowsCount();

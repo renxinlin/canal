@@ -176,12 +176,13 @@ public class MysqlConnection implements ErosaConnection {
         while (fetcher.fetch()) {
             accumulateReceivedBytes(fetcher.limit());
             LogEvent event = null;
+            // 这里是一条binlog不是一个事务所有的binlog
             event = decoder.decode(fetcher, context);
 
             if (event == null) {
                 throw new CanalParseException("parse failed");
             }
-
+            // TODO 任新林 sink 出错检查有没有推进index 没有推荐那么sink估计始终出错
             if (!func.sink(event)) {
                 break;
             }
@@ -206,6 +207,7 @@ public class MysqlConnection implements ErosaConnection {
             // fix bug: #890 将gtid传输至context中，供decode使用
             context.setGtidSet(gtidSet);
             while (fetcher.fetch()) {
+                // 积累收到的字节kb大小
                 accumulateReceivedBytes(fetcher.limit());
                 LogEvent event = null;
                 event = decoder.decode(fetcher, context);

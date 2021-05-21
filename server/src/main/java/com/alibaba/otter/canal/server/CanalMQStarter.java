@@ -158,6 +158,7 @@ public class CanalMQStarter {
                 canalDestination.setPartitionHash(mqConfig.getPartitionHash());
                 canalDestination.setDynamicTopicPartitionNum(mqConfig.getDynamicTopicPartitionNum());
 
+
                 canalServer.subscribe(clientIdentity);
                 logger.info("## the MQ producer: {} is running now ......", destination);
 
@@ -166,11 +167,13 @@ public class CanalMQStarter {
                 while (running && destinationRunning.get()) {
                     Message message;
                     if (getTimeout != null && getTimeout > 0) {
+                        // 获取指定instance的message
                         message = canalServer.getWithoutAck(clientIdentity,
                             getBatchSize,
                             getTimeout.longValue(),
                             TimeUnit.MILLISECONDS);
                     } else {
+                        // 拉取指定
                         message = canalServer.getWithoutAck(clientIdentity, getBatchSize);
                     }
 

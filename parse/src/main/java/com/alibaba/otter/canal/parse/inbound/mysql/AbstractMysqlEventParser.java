@@ -53,7 +53,8 @@ public abstract class AbstractMysqlEventParser extends AbstractEventParser {
 
         convert.setFieldFilterMap(getFieldFilterMap());
         convert.setFieldBlackFilterMap(getFieldBlackFilterMap());
-
+        // 对于白名单 update过滤真正变化的字段
+        convert.setNeedOnlyChangedField(getNeedOnlyChangedField());
         convert.setCharset(connectionCharset);
         convert.setFilterQueryDcl(filterQueryDcl);
         convert.setFilterQueryDml(filterQueryDml);

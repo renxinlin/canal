@@ -118,12 +118,12 @@ public class EntryEventSink extends AbstractCanalEventSink<List<CanalEntry.Entry
             Event event = new Event(new LogIdentity(remoteAddress, -1L), entry, raw);
             events.add(event);
         }
-
+        //  这里的type有dml 的begin end row 和心跳 还有其他的ddl等
         if (hasRowData || hasHeartBeat) {
             // 存在row记录 或者 存在heartbeat记录，直接跳给后续处理
             return doSink(events);
         } else {
-            // 需要过滤的数据
+            // 需要过滤的数据 这里就是ddl等过滤配置
             if (filterEmtryTransactionEntry && !CollectionUtils.isEmpty(events)) {
                 long currentTimestamp = events.get(0).getExecuteTime();
                 // 基于一定的策略控制，放过空的事务头和尾，便于及时更新数据库位点，表明工作正常
@@ -157,6 +157,11 @@ public class EntryEventSink extends AbstractCanalEventSink<List<CanalEntry.Entry
         }
     }
 
+    /**
+     * 一个事务对应的events
+     * @param events
+     * @return
+     */
     protected boolean doSink(List<Event> events) {
         for (CanalEventDownStreamHandler<List<Event>> handler : getHandlers()) {
             events = handler.before(events);

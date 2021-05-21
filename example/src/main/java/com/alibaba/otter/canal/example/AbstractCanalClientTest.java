@@ -25,6 +25,7 @@ public class AbstractCanalClientTest extends BaseCanalClientTest {
 
     protected void start() {
         Assert.notNull(connector, "connector is null");
+
         thread = new Thread(this::process);
 
         thread.setUncaughtExceptionHandler(handler);
@@ -49,13 +50,14 @@ public class AbstractCanalClientTest extends BaseCanalClientTest {
     }
 
     protected void process() {
-        int batchSize = 5 * 1024;
+        int batchSize = 2;
         while (running) {
             try {
                 MDC.put("destination", destination);
                 connector.connect();
                 connector.subscribe();
                 while (running) {
+
                     Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
                     long batchId = message.getId();
                     int size = message.getEntries().size();
@@ -65,8 +67,11 @@ public class AbstractCanalClientTest extends BaseCanalClientTest {
                         // } catch (InterruptedException e) {
                         // }
                     } else {
+                        System.out.println("=================================开始batch");
                         printSummary(message, batchId, size);
                         printEntry(message.getEntries());
+                        System.out.println("=================================结束"+message.getEntries().size());
+
                     }
 
                     if (batchId != -1) {

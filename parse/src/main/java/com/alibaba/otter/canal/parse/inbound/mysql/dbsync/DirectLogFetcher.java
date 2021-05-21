@@ -12,6 +12,13 @@ import com.alibaba.otter.canal.parse.driver.mysql.socket.SocketChannel;
 import com.taobao.tddl.dbsync.binlog.LogFetcher;
 
 /**
+ *
+ *
+ * 1.发送binlogdump命令。发送COM_BINLOG_DUMP命令，携带binlogFileName、binlogPosition和slaveServerId等关键信息。
+ *
+ * 2.构建一个binlog获取器组件DirectLogFetcher。使用它获得binlog数据。
+ *
+ * 3.循环从DirectLogFetcher获取内容，将获取到的数据转化为event。
  * 基于socket的logEvent实现
  * 
  * @author jianghang 2013-1-14 下午07:39:30

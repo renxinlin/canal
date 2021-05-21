@@ -306,13 +306,13 @@ public class SimpleCanalConnector implements CanalConnector {
             if (unit == null) {
                 unit = TimeUnit.MILLISECONDS;
             }
-
             writeWithHeader(Packet.newBuilder()
                 .setType(PacketType.GET)
                 .setBody(Get.newBuilder()
                     .setAutoAck(false)
                     .setDestination(clientIdentity.getDestination())
                     .setClientId(String.valueOf(clientIdentity.getClientId()))
+                        // 2
                     .setFetchSize(size)
                     .setTimeout(time)
                     .setUnit(unit.ordinal())

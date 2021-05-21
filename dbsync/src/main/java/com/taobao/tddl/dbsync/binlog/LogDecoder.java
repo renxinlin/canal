@@ -48,6 +48,9 @@ import com.taobao.tddl.dbsync.binlog.event.mariadb.StartEncryptionLogEvent;
 /**
  * Implements a binary-log decoder.
  *
+ *
+ * 这是binlog解析  后续还有个事务合并 EventTransactionBuffer
+ *
  * <pre>
  * LogDecoder decoder = new LogDecoder();
  * decoder.handle(...);

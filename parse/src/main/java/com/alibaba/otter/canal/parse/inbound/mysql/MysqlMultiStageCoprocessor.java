@@ -55,11 +55,15 @@ public class MysqlMultiStageCoprocessor extends AbstractCanalLifeCycle implement
 
     private static final int                  maxFullTimes = 10;
     private LogEventConvert                   logEventConvert;
+
+
+    // 存储一条事务 两个指针控制一条事务对应的entrys
     private EventTransactionBuffer            transactionBuffer;
     private ErosaConnection                   connection;
 
     private int                               parserThreadCount;
     private int                               ringBufferSize;
+    // 从mysql dump解析后满足dml ddl等的 存储一条logevent 高性能队列的缓存
     private RingBuffer<MessageEvent>          disruptorMsgBuffer;
     private ExecutorService                   parserExecutor;
     private ExecutorService                   stageExecutor;

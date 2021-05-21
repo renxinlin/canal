@@ -22,6 +22,7 @@ public class MQProperties {
     private int     aliyunUid               = 0;
 
     public boolean isFlatMessage() {
+        // 是否是json格式
         return flatMessage;
     }
 

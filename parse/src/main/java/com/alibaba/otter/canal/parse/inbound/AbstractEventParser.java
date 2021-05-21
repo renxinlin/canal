@@ -61,7 +61,9 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
     protected Map<String, List<String>> 			fieldFilterMap;
     protected String		  			  			fieldBlackFilter;
     protected Map<String, List<String>> 			fieldBlackFilterMap;
-    
+    protected boolean                               needOnlyChangedField        = false;
+
+
     private CanalAlarmHandler                        alarmHandler               = null;
 
     // 统计参数
@@ -127,9 +129,15 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
         }
     }
 
+
+    /**
+     * 将binlog 一条条按事务级别 解析 丢到EventTransactionBuffer缓存
+     * 然后 进行下一步sink 到store环节
+     */
     public AbstractEventParser(){
         // 初始化一下
         transactionBuffer = new EventTransactionBuffer(transaction -> {
+            // 进行下一步sink 到store环节
             boolean successed = consumeTheEventAndProfilingIfNecessary(transaction);
             if (!running) {
                 return;
@@ -208,7 +216,7 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
                         final SinkFunction sinkHandler = new SinkFunction<EVENT>() {
 
                             private LogPosition lastPosition;
-
+                            // 对应一个binlog
                             public boolean sink(EVENT event) {
                                 try {
                                     CanalEntry.Entry entry = parseAndProfilingIfNecessary(event, false);
@@ -384,6 +392,13 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
         }
     }
 
+    /**
+     * 一个事务所有的entry
+     * @param entrys
+     * @return
+     * @throws CanalSinkException
+     * @throws InterruptedException
+     */
     protected boolean consumeTheEventAndProfilingIfNecessary(List<CanalEntry.Entry> entrys) throws CanalSinkException,
                                                                                            InterruptedException {
         long startTs = -1;
@@ -713,7 +728,15 @@ public abstract class AbstractEventParser<EVENT> extends AbstractCanalLifeCycle 
 		return fieldFilterMap;
 	}
 
-	/**
+    public boolean getNeedOnlyChangedField() {
+        return needOnlyChangedField;
+    }
+
+    public void setNeedOnlyChangedField(boolean needOnlyChangedField) {
+        this.needOnlyChangedField = needOnlyChangedField;
+    }
+
+    /**
 	 * 获取表字段过滤规则黑名单
 	 * @return
 	 * 	key:	schema.tableName
